@@ -6,6 +6,37 @@ import {SearchState} from "@/pages/SearchPage.tsx";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 
+
+export const useGetRestaurantById = (restaurantId?: string) =>{
+    const getRestaurantByIdRequest = async(): Promise <Restaurant> =>{
+
+        const url = API_BASE_URL
+            + '/api/restaurante/'
+            + restaurantId
+
+        const response = await fetch(url);
+
+        if(!response.ok) {
+            throw new Error("Error al obtener los datos del restaurante")
+        }
+        return response.json();
+    }//Fin del getRestaurantByIdRequest
+
+    const {
+        data: restaurant,
+        isLoading
+    } = useQuery(
+        "fetchRestaurant",
+        getRestaurantByIdRequest,
+        {
+            enabled: !!restaurantId
+        }
+    );
+
+    return {restaurant, isLoading};
+
+}// Fin del useGetRestaurantById
+
 export const useSearchRestaurants = (searchState:SearchState, city?: string) => {
 
     const createSearchRequest = async (): Promise<RestauranteSearchResponse> => {
